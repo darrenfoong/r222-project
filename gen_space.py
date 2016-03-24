@@ -17,8 +17,7 @@ class Vectors:
     def add(self, word, vector):
         current_index = len(self._index)
         self._index[word] = current_index
-        self._vectors[current_index] = vector
-        # TODO: normalise vector
+        self._vectors[current_index] = vector/np.linalg.norm(vector)
 
     def get(self, word):
         if word in self._index:
@@ -62,7 +61,7 @@ num_ans_all = len(adjectives) * len(nouns)
 #an_vectors_mult = Vectors(num_ans_all)
 
 def cos_sim(u, v):
-    return abs(np.dot(u, v)/(np.sqrt(np.dot(u, u)) * np.sqrt(np.dot(v, v))))
+    return abs(np.dot(u, v)/(np.linalg.norm(u) * np.linalg.norm(v)))
 
 an_count = 0
 cuml_add_sim = 0.0
