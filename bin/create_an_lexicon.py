@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+import logging
+
+logging.basicConfig(filename="output/create.log", filemode="w", level=logging.INFO, format="%(message)s")
+
 VECTORS_FILE_PATH = "data/vectors-sk-an.lemmas.50-min-count.15-iters"
 ADJECTIVES_FILE_PATH = "data/adjectives.txt"
 NOUNS_FILE_PATH = "data/nouns.txt"
@@ -21,8 +25,8 @@ with open(VECTORS_FILE_PATH, "r") as vectors_file, \
              nouns.add(entry_words[2])
              an_file.write(entry_words[1] + " " + entry_words[2] + "\n")
 
-     print str(len(adjectives)) + " unique adjectives"
-     print str(len(nouns)) + " unique nouns"
+     logging.info(str(len(adjectives)) + " unique adjectives")
+     logging.info(str(len(nouns)) + " unique nouns")
 
      for adjective in sorted(adjectives):
          adjectives_file.write(adjective + "\n")
