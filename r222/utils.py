@@ -35,7 +35,10 @@ def furthest_vector(ortho, vectors):
     constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
     options = { 'disp': True }
 
-    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options)
+    def callback(x):
+        logging.info(str(sum_cos_sim(x, vectors)))
+
+    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
 
     return res.x
 
