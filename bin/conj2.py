@@ -5,7 +5,7 @@ from r222.wordvectors import WordVectors
 import r222.utils
 import logging
 
-logging.basicConfig(filename="output/conj2.log", filemode="w", level=logging.INFO, format="%(message)s")
+logging.basicConfig(filename="output/conj2.log", filemode="w", level=logging.INFO, format="%(asctime)s - %(message)s")
 
 VECTORS_FILE_PATH = "data/vectors-sk-an.lemmas.50-min-count.15-iters"
 CONJ2_FILE_PATH = "data/conj2.txt"
