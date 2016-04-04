@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.optimize import minimize
 import logging
 
 def cos_sim(u, v):
@@ -7,8 +8,36 @@ def cos_sim(u, v):
 def centroid_vector(vectors):
     return np.mean(vectors, axis=0)
 
+def sum_cos_sim(vector, vectors):
+    norm_vectors = np.linalg.norm(vectors, axis=1)
+    norm_vectors *= np.linalg.norm(vector)
+    prod = np.dot(vector, np.transpose(vectors))
+    prod = np.divide(prod, norm_vectors)
+    return np.sum(np.abs(prod))
+
+def sum_cos_sim_curry(vectors):
+    def f(vector):
+        return -1.0 * sum_cos_sim(vector, vectors)
+    return f
+
+def con_ortho(ortho):
+    def f(vector):
+        return np.dot(ortho, vector)
+    return f
+
+def con_ortho_jac(ortho):
+    def f(vector):
+        return ortho
+    return f
+
 def furthest_vector(ortho, vectors):
-    return ortho
+    x0 = np.ones(300)
+    constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
+    options = { 'disp': True }
+
+    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options)
+
+    return res.x
 
 def read_sn(conj_file_path):
     with open(conj_file_path, "r") as conj_file:
