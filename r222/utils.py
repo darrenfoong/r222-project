@@ -12,7 +12,7 @@ def sum_cos_sim(vector, vectors):
     norm_vectors = np.linalg.norm(vectors, axis=1)
     norm_vectors *= np.linalg.norm(vector)
     prod = np.dot(vector, np.transpose(vectors))
-    prod = np.divide(prod, norm_vectors)
+    prod /= norm_vectors
     return np.sum(np.abs(prod))
 
 def sum_cos_sim_curry(vectors):
