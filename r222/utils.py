@@ -77,8 +77,88 @@ def split_set(ans, num_splits):
     size_split = int(math.ceil(size/float(num_splits)))
     return [ans_list[x:x+size_split] for x in range(0, size, size_split)]
 
+def big_kron(avs, nvs):
+    rows = np.shape(avs)[0]
+    columns = np.shape(avs)[1]
+    columnsq = columns * columns
+
+    res = np.empty(shape=(rows, columnsq))
+
+    for i in range(0, rows):
+        res[i] = np.kron(avs[i], nvs[i])
+
+    return res
+
+def sum_cos_sim2(sn, avs, nvs, anvs):
+    res = 0.0
+
+    sn_split = np.split(sn, 2, axis=0)
+    s = sn_split[0][np.newaxis]
+    n = sn_split[1][np.newaxis]
+
+    c = conj(s, n)
+
+    an_kron = big_kron(avs, nvs)
+    anvs_c = np.dot(an_kron, c)
+
+    prod_inter = np.multiply(anvs_c, anvs)
+    prod = np.sum(prod_inter, axis=1)
+
+    anvs_norms = np.linalg.norm(anvs, axis=1)
+    anvs_c_norms = np.linalg.norm(anvs_c, axis=1)
+
+    norms = np.multiply(anvs_norms, anvs_c_norms)
+    prod /= norms
+
+    return np.sum(np.abs(prod))
+
+def sum_cos_sim2_curry(avs, nvs, anvs):
+    def f(sn):
+        return sum_cos_sim2(sn, avs, nvs, anvs)
+    return f
+
+def con_ortho2(sn):
+    sn_split = np.split(sn, 2, axis=0)
+    s = sn_split[0]
+    n = sn_split[1]
+
+    return np.dot(s, n)
+
 def best_sn(ans, word_vectors):
-    return np.ones(300), np.ones(300)
+    sn0 = np.ones(600)
+    constraints = { 'type': 'eq', 'fun': con_ortho2 }
+    options = { 'disp': True }
+
+    num_ans = len(ans)
+
+    avs = np.empty(shape=(num_ans, 300))
+    nvs = np.empty(shape=(num_ans, 300))
+    anvs = np.empty(shape=(num_ans, 300))
+    current_index = 0
+
+    for an in ans:
+        line_split = an.split(" ")
+        adjective = line_split[0]
+        noun = line_split[1]
+
+        adjective_noun = adjective + "_" + noun
+        anvs[current_index] = word_vectors.get("XXX_" + adjective_noun + "_XXX")
+
+        avs[current_index] = word_vectors.get(adjective)
+        nvs[current_index] = word_vectors.get(noun)
+
+        current_index += 1
+
+    logging.info("Pre-processing done")
+
+    def callback(sn):
+        logging.info(str(sum_cos_sim2(sn, avs, nvs, anvs)))
+
+    res = minimize(sum_cos_sim2_curry(avs, nvs, anvs), sn0, constraints=constraints, options=options, callback=callback)
+
+    sn_split = np.split(res.x, 2, axis=0)
+
+    return sn_split[0], sn_split[1]
 
 def conj(s, n):
     return np.multiply(np.transpose(np.kron(s, s)), s) + np.multiply(np.transpose(np.kron(s, n)), n) + np.multiply(np.transpose(np.kron(n, s)), n) + np.multiply(np.transpose(np.kron(n, n)), n)
