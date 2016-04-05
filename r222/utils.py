@@ -53,5 +53,22 @@ def read_sn(conj_file_path):
     # np.newaxis necessary for successful np.tranpose() in conj()
     return np.array(s)[np.newaxis], np.array(n)[np.newaxis]
 
+def write_sn(conj_file_path, s, n):
+    with open(conj_file_path, "w") as conj_file:
+        s_str = " ".join(map((lambda x: str(x)), s))
+        n_str = " ".join(map((lambda x: str(x)), n))
+        conj_file.write(s_str + "\n")
+        conj_file.write(n_str + "\n")
+
+def read_set(set_file_path):
+    res = set()
+
+    with open(set_file_path, "r") as set_file:
+        for line in iter(set_file):
+            line = line.replace("\n", "")
+            res.add(line)
+
+    return res
+
 def conj(s, n):
     return np.multiply(np.transpose(np.kron(s, s)), s) + np.multiply(np.transpose(np.kron(s, n)), n) + np.multiply(np.transpose(np.kron(n, s)), n) + np.multiply(np.transpose(np.kron(n, n)), n)

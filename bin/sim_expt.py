@@ -13,8 +13,13 @@ ADJECTIVES_FILE_PATH = "data/adjectives.txt"
 NOUNS_FILE_PATH = "data/nouns.txt"
 AN_FILE_PATH = "data/an.txt"
 
+COUNTRIES_FILE_PATH = "data/countries.txt"
+SPORTS_FILE_PATH = "data/sports.txt"
+
 CONJ1_FILE_PATH = "data/conj1.txt"
 CONJ2_FILE_PATH = "data/conj2.txt"
+CONJ3_COUNTRIES_FILE_PATH = "data/conj3countries.txt"
+CONJ3_SPORTS_FILE_PATH = "data/conj3sports.txt"
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 adjectives = list()
@@ -31,17 +36,28 @@ with open(ADJECTIVES_FILE_PATH, "r") as adjectives_file, \
     logging.info("Adjectives: " + str(len(adjectives)))
     logging.info("Nouns: " + str(len(nouns)))
 
+countries = r222.utils.read_set(COUNTRIES_FILE_PATH)
+sports = r222.utils.read_set(SPORTS_FILE_PATH)
+
 an_count = 0
+an_countries_count = 0
+an_sports_count = 0
 cuml_add_sim = 0.0
 cuml_mult_sim = 0.0
 cuml_conj1_sim = 0.0
 cuml_conj2_sim = 0.0
+cuml_conj3_countries_sim = 0.0
+cuml_conj3_sports_sim = 0.0
 
 s_1, n_1 = r222.utils.read_sn(CONJ1_FILE_PATH)
 s_2, n_2 = r222.utils.read_sn(CONJ2_FILE_PATH)
+s_3_countries, n_3_countries = r222.utils.read_sn(CONJ3_COUNTRIES_FILE_PATH)
+s_3_sports, n_3_sports = r222.utils.read_sn(CONJ3_SPORTS_FILE_PATH)
 
 conj1 = r222.utils.conj(s_1, n_1)
 conj2 = r222.utils.conj(s_2, n_2)
+conj3_countries = r222.utils.conj(s_3_countries, n_3_countries)
+conj3_sports = r222.utils.conj(s_3_sports, n_3_sports)
 
 with open(AN_FILE_PATH, "r") as an_file:
     for line in iter(an_file):
@@ -72,14 +88,27 @@ with open(AN_FILE_PATH, "r") as an_file:
         an_vector_conj1 = np.dot(np.kron(adjective_vector, noun_vector), conj1)
         an_vector_conj2 = np.dot(np.kron(adjective_vector, noun_vector), conj2)
 
-        an_count += 1
         cuml_add_sim += r222.utils.cos_sim(an_vector, an_vector_add)
         cuml_mult_sim += r222.utils.cos_sim(an_vector, an_vector_mult)
         cuml_conj1_sim += r222.utils.cos_sim(an_vector, an_vector_conj1)
         cuml_conj2_sim += r222.utils.cos_sim(an_vector, an_vector_conj2)
 
+        an_count += 1
+
+        if noun in countries:
+            an_vector_conj3_countries = np.dot(np.kron(adjective_vector, noun_vector), conj3_countries)
+            cuml_conj3_countries_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_countries)
+            an_countries_count += 1
+
+        if noun in sports:
+            an_vector_conj3_sports = np.dot(np.kron(adjective_vector, noun_vector), conj3_sports)
+            cuml_conj3_sports_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_sports)
+            an_sports_count += 1
+
 logging.info("Total AN pairs: " + str(an_count))
-logging.info("Average cosine similarity (addition): " + str(cuml_add_sim/an_count))
-logging.info("Average cosine similarity (multiplication): " + str(cuml_mult_sim/an_count))
-logging.info("Average cosine similarity (conj1): " + str(cuml_conj1_sim/an_count))
-logging.info("Average cosine similarity (conj2): " + str(cuml_conj2_sim/an_count))
+logging.info("Average cosine similarity (addition): " + str(cuml_add_sim/an_count) + " (" + str(an_count) + ")")
+logging.info("Average cosine similarity (multiplication): " + str(cuml_mult_sim/an_count) + " (" + str(an_count) + ")")
+logging.info("Average cosine similarity (conj1): " + str(cuml_conj1_sim/an_count) + " (" + str(an_count) + ")")
+logging.info("Average cosine similarity (conj2): " + str(cuml_conj2_sim/an_count) + " (" + str(an_count) + ")")
+logging.info("Average cosine similarity (conj3countries): " + str(cuml_conj3_countries_sim/an_countries_count) + " (" + str(an_countries_count) + ")")
+logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " (" + str(an_sports_count) + ")")

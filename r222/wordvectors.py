@@ -37,3 +37,18 @@ class WordVectors:
             self._unk = current_index
             logging.info("wordVectors has previous UNK: " + key)
             logging.info("Remapping UNK")
+
+    def filter(self, path):
+        with open(path, "r") as filter_file:
+            num_filter = sum(1 for line in filter_file)
+
+        res = np.empty(shape=(num_filter, self._size_embeddings))
+        current_index = 0
+
+        with open(path, "r") as filter_file:
+            for line in iter(filter_file):
+                line = line.replace("\n", "")
+                res[current_index] = self.get(line)
+                current_index += 1
+
+        return res
