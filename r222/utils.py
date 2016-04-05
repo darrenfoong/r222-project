@@ -92,9 +92,8 @@ def big_kron(avs, nvs):
 def sum_cos_sim2(sn, avs, nvs, anvs):
     res = 0.0
 
-    sn_split = np.split(sn, 2, axis=0)
-    s = sn_split[0][np.newaxis]
-    n = sn_split[1][np.newaxis]
+    s = sn[0:300][np.newaxis]
+    n = sn[300:600][np.newaxis]
 
     c = conj(s, n)
 
@@ -118,11 +117,7 @@ def sum_cos_sim2_curry(avs, nvs, anvs):
     return f
 
 def con_ortho2(sn):
-    sn_split = np.split(sn, 2, axis=0)
-    s = sn_split[0]
-    n = sn_split[1]
-
-    return np.dot(s, n)
+    return np.dot(sn[0:300], sn[300:600])
 
 def best_sn(ans, word_vectors):
     sn0 = np.ones(600)
@@ -161,4 +156,4 @@ def best_sn(ans, word_vectors):
     return sn_split[0], sn_split[1]
 
 def conj(s, n):
-    return np.multiply(np.transpose(np.kron(s, s)), s) + np.multiply(np.transpose(np.kron(s, n)), n) + np.multiply(np.transpose(np.kron(n, s)), n) + np.multiply(np.transpose(np.kron(n, n)), n)
+    return np.dot(np.transpose(np.kron(s, s)), s) + np.dot(np.transpose(np.kron(s, n)), n) + np.dot(np.transpose(np.kron(n, s)), n) + np.dot(np.transpose(np.kron(n, n)), n)
