@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from scipy.optimize import minimize
 import logging
 
@@ -69,6 +70,15 @@ def read_set(set_file_path):
             res.add(line)
 
     return res
+
+def split_set(ans, num_splits):
+    size = len(ans)
+    ans_list = list(ans)
+    size_split = int(math.ceil(size/float(num_splits)))
+    return [ans_list[x:x+size_split] for x in range(0, size, size_split)]
+
+def best_sn(ans, word_vectors):
+    return np.ones(300), np.ones(300)
 
 def conj(s, n):
     return np.multiply(np.transpose(np.kron(s, s)), s) + np.multiply(np.transpose(np.kron(s, n)), n) + np.multiply(np.transpose(np.kron(n, s)), n) + np.multiply(np.transpose(np.kron(n, n)), n)

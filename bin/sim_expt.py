@@ -20,6 +20,9 @@ CONJ1_FILE_PATH = "data/conj1.txt"
 CONJ2_FILE_PATH = "data/conj2.txt"
 CONJ3_COUNTRIES_FILE_PATH = "data/conj3countries.txt"
 CONJ3_SPORTS_FILE_PATH = "data/conj3sports.txt"
+CONJ4_FILE_PATH = "data/conj4.txt"
+
+NUM_SPLITS = 10
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 adjectives = list()
@@ -110,5 +113,59 @@ logging.info("Average cosine similarity (addition): " + str(cuml_add_sim/an_coun
 logging.info("Average cosine similarity (multiplication): " + str(cuml_mult_sim/an_count) + " (" + str(an_count) + ")")
 logging.info("Average cosine similarity (conj1): " + str(cuml_conj1_sim/an_count) + " (" + str(an_count) + ")")
 logging.info("Average cosine similarity (conj2): " + str(cuml_conj2_sim/an_count) + " (" + str(an_count) + ")")
-logging.info("Average cosine similarity (conj3countries): " + str(cuml_conj3_countries_sim/an_countries_count) + " (" + str(an_countries_count) + ")")
-logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " (" + str(an_sports_count) + ")")
+
+if an_countries_count == 0:
+    logging.info("an_countries_count = 0")
+else:
+    logging.info("Average cosine similarity (conj3countries): " + str(cuml_conj3_countries_sim/an_countries_count) + " (" + str(an_countries_count) + ")")
+
+if an_sports_count == 0:
+    logging.info("an_sports_count = 0")
+else:
+    logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " (" + str(an_sports_count) + ")")
+
+ans = r222.utils.read_set(AN_FILE_PATH)
+ans_split = r222.utils.split_set(ans, NUM_SPLITS)
+
+cuml_conj4_sims = list()
+
+for i in range(0, NUM_SPLITS):
+    s_4, n_4 = r222.utils.read_sn(CONJ4_FILE_PATH + "." + str(i+1))
+    conj4 = r222.utils.conj(s_4, n_4)
+
+    an_count = 0
+    cuml_conj4_sim = 0.0
+
+    for line in ans_split[i]:
+        line_split = line.split(" ")
+        adjective = line_split[0]
+        noun = line_split[1]
+
+        adjective_noun = adjective + "_" + noun
+        an_vector = word_vectors.get("XXX_" + adjective_noun + "_XXX")
+
+        if an_vector is None:
+            continue
+
+        adjective_vector = word_vectors.get(adjective)
+        noun_vector = word_vectors.get(noun)
+
+        if adjective_vector is None:
+            continue
+
+        if noun_vector is None:
+            continue
+
+        an_vector_conj4 = np.dot(np.kron(adjective_vector, noun_vector), conj4)
+
+        cuml_conj4_sim += r222.utils.cos_sim(an_vector, an_vector_conj4)
+
+        an_count += 1
+
+    avg = cuml_conj4_sim/an_count
+
+    logging.info("Average cosine similarity (conj4/" + str(i+1) + "): " + str(avg) + " (" + str(an_count) + ")")
+
+    cuml_conj4_sims.append(avg)
+
+logging.info("Average cosine similarity (conj4): " + str(np.mean(cuml_conj4_sims)))
