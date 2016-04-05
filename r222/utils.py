@@ -51,8 +51,7 @@ def read_sn(conj_file_path):
         s = map((lambda s: float(s)), lines[0])
         n = map((lambda s: float(s)), lines[1])
 
-    # np.newaxis necessary for successful np.tranpose() in conj()
-    return np.array(s)[np.newaxis], np.array(n)[np.newaxis]
+    return np.array(s), np.array(n)
 
 def write_sn(conj_file_path, s, n):
     with open(conj_file_path, "w") as conj_file:
@@ -92,8 +91,8 @@ def big_kron(avs, nvs):
 def sum_cos_sim2(sn, avs, nvs, anvs):
     res = 0.0
 
-    s = sn[0:300][np.newaxis]
-    n = sn[300:600][np.newaxis]
+    s = sn[0:300]
+    n = sn[300:600]
 
     c = conj(s, n)
 
@@ -156,4 +155,4 @@ def best_sn(ans, word_vectors):
     return sn_split[0], sn_split[1]
 
 def conj(s, n):
-    return np.dot(np.transpose(np.kron(s, s)), s) + np.dot(np.transpose(np.kron(s, n)), n) + np.dot(np.transpose(np.kron(n, s)), n) + np.dot(np.transpose(np.kron(n, n)), n)
+    return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
