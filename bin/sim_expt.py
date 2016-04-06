@@ -15,11 +15,15 @@ AN_FILE_PATH = "data/an.txt"
 
 COUNTRIES_FILE_PATH = "aux/countries.txt"
 SPORTS_FILE_PATH = "aux/sports.txt"
+ANIMALS_FILE_PATH = "aux/animals.txt"
+OCCUPATIONS_FILE_PATH = "aux/occupations.txt"
 
 CONJ1_FILE_PATH = "data/conj1.txt"
 CONJ2_FILE_PATH = "data/conj2.txt"
 CONJ3_COUNTRIES_FILE_PATH = "data/conj3countries.txt"
 CONJ3_SPORTS_FILE_PATH = "data/conj3sports.txt"
+CONJ3_ANIMALS_FILE_PATH = "data/conj3animals.txt"
+CONJ3_OCCUPATIONS_FILE_PATH = "data/conj3occupations.txt"
 CONJ4_FILE_PATH = "data/conj4.txt"
 
 NUM_SPLITS = 10
@@ -45,22 +49,30 @@ sports = r222.utils.read_set(SPORTS_FILE_PATH)
 an_count = 0
 an_countries_count = 0
 an_sports_count = 0
+an_animals_count = 0
+an_occupations_count = 0
 cuml_add_sim = 0.0
 cuml_mult_sim = 0.0
 cuml_conj1_sim = 0.0
 cuml_conj2_sim = 0.0
 cuml_conj3_countries_sim = 0.0
 cuml_conj3_sports_sim = 0.0
+cuml_conj3_animals_sim = 0.0
+cuml_conj3_occupations_sim = 0.0
 
 s_1, n_1 = r222.utils.read_sn(CONJ1_FILE_PATH)
 s_2, n_2 = r222.utils.read_sn(CONJ2_FILE_PATH)
 s_3_countries, n_3_countries = r222.utils.read_sn(CONJ3_COUNTRIES_FILE_PATH)
 s_3_sports, n_3_sports = r222.utils.read_sn(CONJ3_SPORTS_FILE_PATH)
+s_3_animals, n_3_animals = r222.utils.read_sn(CONJ3_ANIMALS_FILE_PATH)
+s_3_occupations, n_3_occupations = r222.utils.read_sn(CONJ3_OCCUPATIONS_FILE_PATH)
 
 conj1 = r222.utils.conj(s_1, n_1)
 conj2 = r222.utils.conj(s_2, n_2)
 conj3_countries = r222.utils.conj(s_3_countries, n_3_countries)
 conj3_sports = r222.utils.conj(s_3_sports, n_3_sports)
+conj3_animals = r222.utils.conj(s_3_animals, n_3_animals)
+conj3_occupations = r222.utils.conj(s_3_occupations, n_3_occupations)
 
 with open(AN_FILE_PATH, "r") as an_file:
     for line in iter(an_file):
@@ -108,6 +120,16 @@ with open(AN_FILE_PATH, "r") as an_file:
             cuml_conj3_sports_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_sports)
             an_sports_count += 1
 
+        if noun in animals:
+            an_vector_conj3_animals = np.dot(np.kron(adjective_vector, noun_vector), conj3_animals)
+            cuml_conj3_animals_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_animals)
+            an_animals_count += 1
+
+        if noun in occupations:
+            an_vector_conj3_occupations = np.dot(np.kron(adjective_vector, noun_vector), conj3_occupations)
+            cuml_conj3_occupations_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_occupations)
+            an_occupations_count += 1
+
 logging.info("Total AN pairs: " + str(an_count))
 logging.info("Average cosine similarity (addition): " + str(cuml_add_sim/an_count) + " (" + str(an_count) + ")")
 logging.info("Average cosine similarity (multiplication): " + str(cuml_mult_sim/an_count) + " (" + str(an_count) + ")")
@@ -123,6 +145,16 @@ if an_sports_count == 0:
     logging.info("an_sports_count = 0")
 else:
     logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " (" + str(an_sports_count) + ")")
+
+if an_animals_count == 0:
+    logging.info("an_animals_count = 0")
+else:
+    logging.info("Average cosine similarity (conj3animals): " + str(cuml_conj3_animals_sim/an_animals_count) + " (" + str(an_animals_count) + ")")
+
+if an_occupations_count == 0:
+    logging.info("an_occupations_count = 0")
+else:
+    logging.info("Average cosine similarity (conj3occupations): " + str(cuml_conj3_occupations_sim/an_occupations_count) + " (" + str(an_occupations_count) + ")")
 
 ans = r222.utils.read_set(AN_FILE_PATH)
 ans_split = r222.utils.split_set(ans, NUM_SPLITS)
