@@ -8,8 +8,8 @@ import logging
 logging.basicConfig(filename="output/conj3.log", filemode="w", level=logging.INFO, format="%(asctime)s - %(message)s")
 
 VECTORS_FILE_PATH = "data/vectors-sk-an.lemmas.50-min-count.15-iters"
-COUNTRIES_FILE_PATH = "data/countries.txt"
-SPORTS_FILE_PATH = "data/sports.txt"
+COUNTRIES_FILE_PATH = "aux/countries.txt"
+SPORTS_FILE_PATH = "aux/sports.txt"
 
 CONJ3_COUNTRIES_FILE_PATH = "data/conj3countries.txt"
 CONJ3_SPORTS_FILE_PATH = "data/conj3sports.txt"

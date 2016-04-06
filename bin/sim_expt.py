@@ -13,8 +13,8 @@ ADJECTIVES_FILE_PATH = "data/adjectives.txt"
 NOUNS_FILE_PATH = "data/nouns.txt"
 AN_FILE_PATH = "data/an.txt"
 
-COUNTRIES_FILE_PATH = "data/countries.txt"
-SPORTS_FILE_PATH = "data/sports.txt"
+COUNTRIES_FILE_PATH = "aux/countries.txt"
+SPORTS_FILE_PATH = "aux/sports.txt"
 
 CONJ1_FILE_PATH = "data/conj1.txt"
 CONJ2_FILE_PATH = "data/conj2.txt"
