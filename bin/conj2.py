@@ -15,6 +15,6 @@ word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 s_2 = r222.utils.centroid_vector(word_vectors._embeddings)
 n_2 = r222.utils.furthest_vector(s_2, word_vectors._embeddings)
 
-r222.utils.write_sn(CONJ1_FILE_PATH, s_2, n_2)
+r222.utils.write_sn(CONJ2_FILE_PATH, s_2, n_2)
 
 logging.info("Done")
