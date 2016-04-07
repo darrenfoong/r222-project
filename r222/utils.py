@@ -76,6 +76,15 @@ def split_set(ans, num_splits):
     size_split = int(math.ceil(size/float(num_splits)))
     return [ans_list[x:x+size_split] for x in range(0, size, size_split)]
 
+def dotkron(a, n, c):
+    # original dotkron
+    return np.dot(np.kron(a, n), c)
+
+def dotkron2(a, n, c):
+    # dotkron with einsum, same performance
+    cp = np.reshape(c, (300, 300, 300))
+    return np.einsum("i,j,ijk->k", a, n, cp)
+
 def big_kron(avs, nvs):
     rows = np.shape(avs)[0]
     columns = np.shape(avs)[1]
@@ -88,6 +97,32 @@ def big_kron(avs, nvs):
 
     return res
 
+def big_dotkron(avs, nvs, c):
+    # original big_dotkron with big_kron, fastest
+    # but uses most memory because of intermediate an_kron
+    an_kron = big_kron(avs, nvs)
+    return np.dot(an_kron, c)
+
+def big_dotkron2(avs, nvs, c):
+    # slower big_dotkron
+    # but uses less memory because no intermediate
+    cp = np.reshape(c, (300, 300, 300))
+    return np.einsum("li,lj,ijk->lk", avs, nvs, cp)
+
+def big_dotkron3(avs, nvs, c):
+    # slower than 1, faster than 2
+    # doesn't use less memory
+    cp = np.reshape(c, (300, 300, 300))
+    inter = np.einsum("lj,ijk->lik", nvs, cp)
+    return np.einsum("li,lik->lk", avs, inter)
+
+def big_dotkron4(avs, nvs, c):
+    # slowest of all, despite using tensordot
+    # doesn't use less memory
+    cp = np.reshape(c, (300, 300, 300))
+    inter = np.tensordot(nvs, cp, axes=([1],[1]))
+    return np.einsum("li,lik->lk", avs, inter)
+
 def sum_cos_sim2(sn, avs, nvs, anvs):
     res = 0.0
 
@@ -96,8 +131,7 @@ def sum_cos_sim2(sn, avs, nvs, anvs):
 
     c = conj(s, n)
 
-    an_kron = big_kron(avs, nvs)
-    anvs_c = np.dot(an_kron, c)
+    anvs_c = big_dotkron2(avs, nvs, c)
 
     prod_inter = np.multiply(anvs_c, anvs)
     prod = np.sum(prod_inter, axis=1)

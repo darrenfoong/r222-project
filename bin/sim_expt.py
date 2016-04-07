@@ -100,8 +100,8 @@ with open(AN_FILE_PATH, "r") as an_file:
 
         an_vector_add = np.add(adjective_vector, noun_vector)
         an_vector_mult = np.multiply(adjective_vector, noun_vector)
-        an_vector_conj1 = np.dot(np.kron(adjective_vector, noun_vector), conj1)
-        an_vector_conj2 = np.dot(np.kron(adjective_vector, noun_vector), conj2)
+        an_vector_conj1 = r222.utils.dotkron(adjective_vector, noun_vector, conj1)
+        an_vector_conj2 = r222.utils.dotkron(adjective_vector, noun_vector, conj2)
 
         cuml_add_sim += r222.utils.cos_sim(an_vector, an_vector_add)
         cuml_mult_sim += r222.utils.cos_sim(an_vector, an_vector_mult)
@@ -111,22 +111,22 @@ with open(AN_FILE_PATH, "r") as an_file:
         an_count += 1
 
         if noun in countries:
-            an_vector_conj3_countries = np.dot(np.kron(adjective_vector, noun_vector), conj3_countries)
+            an_vector_conj3_countries = r222.utils.dotkron(adjective_vector, noun_vector, conj3_countries)
             cuml_conj3_countries_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_countries)
             an_countries_count += 1
 
         if noun in sports:
-            an_vector_conj3_sports = np.dot(np.kron(adjective_vector, noun_vector), conj3_sports)
+            an_vector_conj3_sports = r222.utils.dotkron(adjective_vector, noun_vector, conj3_sports)
             cuml_conj3_sports_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_sports)
             an_sports_count += 1
 
         if noun in animals:
-            an_vector_conj3_animals = np.dot(np.kron(adjective_vector, noun_vector), conj3_animals)
+            an_vector_conj3_animals = r222.utils.dotkron(adjective_vector, noun_vector, conj3_animals)
             cuml_conj3_animals_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_animals)
             an_animals_count += 1
 
         if noun in occupations:
-            an_vector_conj3_occupations = np.dot(np.kron(adjective_vector, noun_vector), conj3_occupations)
+            an_vector_conj3_occupations = r222.utils.dotkron(adjective_vector, noun_vector, conj3_occupations)
             cuml_conj3_occupations_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_occupations)
             an_occupations_count += 1
 
@@ -188,7 +188,7 @@ for i in range(0, NUM_SPLITS):
         if noun_vector is None:
             continue
 
-        an_vector_conj4 = np.dot(np.kron(adjective_vector, noun_vector), conj4)
+        an_vector_conj4 = r222.utils.dotkron(adjective_vector, noun_vector, conj4)
 
         cuml_conj4_sim += r222.utils.cos_sim(an_vector, an_vector_conj4)
 
