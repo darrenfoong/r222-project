@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+import math
 from r222.wordvectors import WordVectors
 import r222.utils as ru
 import itertools
@@ -45,17 +46,21 @@ conj3_animals = ru.conj(s_3_animals, n_3_animals)
 conj3_occupations = ru.conj(s_3_occupations, n_3_occupations)
 
 def gen_space(f, label):
-    word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN", extra=len(adjectives)*len(nouns))
+    size = len(adjectives)*len(nouns)
+
+    word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN", extra=size)
 
     count = 1
+    count_freq = max(10**(math.floor(math.log10(size))) / 1000, 1)
 
     for adjective, noun in itertools.product(adjectives, nouns):
         key = "YYY_" + adjective + "_" + noun + "_YYY"
         embedding = f(word_vectors.get(adjective), word_vectors.get(noun))
         word_vectors._add(key, embedding)
 
-        logging.info("Processing " + label + "/" + str(count))
         count += 1
+        if count % count_freq == 0:
+            logging.info("Processed " + label + "/" + str(count))
 
     word_vectors.serialize(VECTORS_FILE_PATH + "." + label)
 
