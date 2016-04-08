@@ -142,6 +142,11 @@ def big_dotkron4(avs, nvs, c):
 def conj(s, n):
     return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
 
+def f_conj(conj):
+    def f(av, nv):
+        return dotkron(av, nv, conj)
+    return f
+
 # Optimisation
 
 def con_ortho(ortho):
