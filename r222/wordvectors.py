@@ -8,6 +8,7 @@ class WordVectors:
         self._unk_string = unk_string
 
         self._map = dict()
+        self._rmap = dict()
         self._size_embeddings = size_embeddings
 
         with open(path, "r") as embeddings_file:
@@ -28,9 +29,16 @@ class WordVectors:
         else:
             return self._embeddings[self._unk]
 
+    def rget(self, index):
+        if index in self._rmap:
+            return self._rmap[index]
+        else:
+            return None
+
     def _add(self, key, embedding):
         current_index = len(self._map)
         self._map[key] = current_index
+        self._rmap[current_index] = key
         self._embeddings[current_index] = embedding/np.linalg.norm(embedding)
 
         if key == self._unk_string:
