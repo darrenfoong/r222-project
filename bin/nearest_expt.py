@@ -2,7 +2,7 @@
 
 import numpy as np
 from r222.wordvectors import WordVectors
-import r222.utils
+import r222.utils as ru
 import itertools
 import logging
 
@@ -26,25 +26,25 @@ NUM_SPLITS = 10
 
 K = 10
 
-adjectives = r222.utils.read_set(ADJECTIVES_FILE_PATH)
-nouns = r222.utils.read_set(NOUNS_FILE_PATH)
+adjectives = ru.read_set(ADJECTIVES_FILE_PATH)
+nouns = ru.read_set(NOUNS_FILE_PATH)
 
 logging.info("Adjectives: " + str(len(adjectives)))
 logging.info("Nouns: " + str(len(nouns)))
 
-s_1, n_1 = r222.utils.read_sn(CONJ1_FILE_PATH)
-s_2, n_2 = r222.utils.read_sn(CONJ2_FILE_PATH)
-s_3_countries, n_3_countries = r222.utils.read_sn(CONJ3_COUNTRIES_FILE_PATH)
-s_3_sports, n_3_sports = r222.utils.read_sn(CONJ3_SPORTS_FILE_PATH)
-s_3_animals, n_3_animals = r222.utils.read_sn(CONJ3_ANIMALS_FILE_PATH)
-s_3_occupations, n_3_occupations = r222.utils.read_sn(CONJ3_OCCUPATIONS_FILE_PATH)
+s_1, n_1 = ru.read_sn(CONJ1_FILE_PATH)
+s_2, n_2 = ru.read_sn(CONJ2_FILE_PATH)
+s_3_countries, n_3_countries = ru.read_sn(CONJ3_COUNTRIES_FILE_PATH)
+s_3_sports, n_3_sports = ru.read_sn(CONJ3_SPORTS_FILE_PATH)
+s_3_animals, n_3_animals = ru.read_sn(CONJ3_ANIMALS_FILE_PATH)
+s_3_occupations, n_3_occupations = ru.read_sn(CONJ3_OCCUPATIONS_FILE_PATH)
 
-conj1 = r222.utils.conj(s_1, n_1)
-conj2 = r222.utils.conj(s_2, n_2)
-conj3_countries = r222.utils.conj(s_3_countries, n_3_countries)
-conj3_sports = r222.utils.conj(s_3_sports, n_3_sports)
-conj3_animals = r222.utils.conj(s_3_animals, n_3_animals)
-conj3_occupations = r222.utils.conj(s_3_occupations, n_3_occupations)
+conj1 = ru.conj(s_1, n_1)
+conj2 = ru.conj(s_2, n_2)
+conj3_countries = ru.conj(s_3_countries, n_3_countries)
+conj3_sports = ru.conj(s_3_sports, n_3_sports)
+conj3_animals = ru.conj(s_3_animals, n_3_animals)
+conj3_occupations = ru.conj(s_3_occupations, n_3_occupations)
 
 def gen_space(f, k):
     word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
@@ -54,7 +54,7 @@ def gen_space(f, k):
         embedding = f(word_vectors.get(adjective), word_vectors.get(noun))
         word_vectors._add(key, embedding)
 
-    nearest_input = r222.utils.read_set(NEAREST_INPUT_FILE_PATH)
+    nearest_input = ru.read_set(NEAREST_INPUT_FILE_PATH)
 
     for line in nearest_input:
         line_split = line.split(" ")
@@ -67,13 +67,13 @@ def gen_space(f, k):
             noun = line_split[1]
             embedding = f(word_vectors.get(adjective), word_vectors.get(noun))
 
-        nearest = r222.utils.nearest(embedding, word_vectors, k)
+        nearest = ru.nearest(embedding, word_vectors, k)
 
         logging.info(nearest)
 
 def f_conj(conj):
     def f(av, nv):
-        return r222.utils.dotkron(av, nv, conj)
+        return ru.dotkron(av, nv, conj)
     return f
 
 gen_space(np.add, K)

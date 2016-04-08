@@ -2,7 +2,7 @@
 
 import numpy as np
 from r222.wordvectors import WordVectors
-import r222.utils
+import r222.utils as ru
 import logging
 
 logging.basicConfig(filename="output/conj3.log", filemode="w", level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -25,24 +25,24 @@ sports_embeddings = word_vectors.filter(SPORTS_FILE_PATH)
 animals_embeddings = word_vectors.filter(ANIMALS_FILE_PATH)
 occupations_embeddings = word_vectors.filter(OCCUPATIONS_FILE_PATH)
 
-s_3_countries = r222.utils.centroid_vector(countries_embeddings)
-n_3_countries = r222.utils.furthest_vector(s_3_countries, countries_embeddings)
+s_3_countries = ru.centroid_vector(countries_embeddings)
+n_3_countries = ru.furthest_vector(s_3_countries, countries_embeddings)
 
-r222.utils.write_sn(CONJ3_COUNTRIES_FILE_PATH, s_3_countries, n_3_countries)
+ru.write_sn(CONJ3_COUNTRIES_FILE_PATH, s_3_countries, n_3_countries)
 
-s_3_sports = r222.utils.centroid_vector(sports_embeddings)
-n_3_sports = r222.utils.furthest_vector(s_3_sports, sports_embeddings)
+s_3_sports = ru.centroid_vector(sports_embeddings)
+n_3_sports = ru.furthest_vector(s_3_sports, sports_embeddings)
 
-r222.utils.write_sn(CONJ3_SPORTS_FILE_PATH, s_3_sports, n_3_sports)
+ru.write_sn(CONJ3_SPORTS_FILE_PATH, s_3_sports, n_3_sports)
 
-s_3_animals = r222.utils.centroid_vector(animals_embeddings)
-n_3_animals = r222.utils.furthest_vector(s_3_animals, animals_embeddings)
+s_3_animals = ru.centroid_vector(animals_embeddings)
+n_3_animals = ru.furthest_vector(s_3_animals, animals_embeddings)
 
-r222.utils.write_sn(CONJ3_ANIMALS_FILE_PATH, s_3_animals, n_3_animals)
+ru.write_sn(CONJ3_ANIMALS_FILE_PATH, s_3_animals, n_3_animals)
 
-s_3_occupations = r222.utils.centroid_vector(occupations_embeddings)
-n_3_occupations = r222.utils.furthest_vector(s_3_occupations, occupations_embeddings)
+s_3_occupations = ru.centroid_vector(occupations_embeddings)
+n_3_occupations = ru.furthest_vector(s_3_occupations, occupations_embeddings)
 
-r222.utils.write_sn(CONJ3_OCCUPATIONS_FILE_PATH, s_3_occupations, n_3_occupations)
+ru.write_sn(CONJ3_OCCUPATIONS_FILE_PATH, s_3_occupations, n_3_occupations)
 
 logging.info("Done")

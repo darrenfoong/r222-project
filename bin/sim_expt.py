@@ -2,7 +2,7 @@
 
 import numpy as np
 from r222.wordvectors import WordVectors
-import r222.utils
+import r222.utils as ru
 import itertools
 import logging
 
@@ -32,16 +32,16 @@ word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 
 logging.info("Word vectors: " + str(len(word_vectors._map)))
 
-adjectives = r222.utils.read_set(ADJECTIVES_FILE_PATH)
-nouns = r222.utils.read_set(NOUNS_FILE_PATH)
+adjectives = ru.read_set(ADJECTIVES_FILE_PATH)
+nouns = ru.read_set(NOUNS_FILE_PATH)
 
 logging.info("Adjectives: " + str(len(adjectives)))
 logging.info("Nouns: " + str(len(nouns)))
 
-countries = r222.utils.read_set(COUNTRIES_FILE_PATH)
-sports = r222.utils.read_set(SPORTS_FILE_PATH)
-animals = r222.utils.read_set(ANIMALS_FILE_PATH)
-occupations = r222.utils.read_set(OCCUPATIONS_FILE_PATH)
+countries = ru.read_set(COUNTRIES_FILE_PATH)
+sports = ru.read_set(SPORTS_FILE_PATH)
+animals = ru.read_set(ANIMALS_FILE_PATH)
+occupations = ru.read_set(OCCUPATIONS_FILE_PATH)
 
 an_count = 0
 an_countries_count = 0
@@ -57,19 +57,19 @@ cuml_conj3_sports_sim = 0.0
 cuml_conj3_animals_sim = 0.0
 cuml_conj3_occupations_sim = 0.0
 
-s_1, n_1 = r222.utils.read_sn(CONJ1_FILE_PATH)
-s_2, n_2 = r222.utils.read_sn(CONJ2_FILE_PATH)
-s_3_countries, n_3_countries = r222.utils.read_sn(CONJ3_COUNTRIES_FILE_PATH)
-s_3_sports, n_3_sports = r222.utils.read_sn(CONJ3_SPORTS_FILE_PATH)
-s_3_animals, n_3_animals = r222.utils.read_sn(CONJ3_ANIMALS_FILE_PATH)
-s_3_occupations, n_3_occupations = r222.utils.read_sn(CONJ3_OCCUPATIONS_FILE_PATH)
+s_1, n_1 = ru.read_sn(CONJ1_FILE_PATH)
+s_2, n_2 = ru.read_sn(CONJ2_FILE_PATH)
+s_3_countries, n_3_countries = ru.read_sn(CONJ3_COUNTRIES_FILE_PATH)
+s_3_sports, n_3_sports = ru.read_sn(CONJ3_SPORTS_FILE_PATH)
+s_3_animals, n_3_animals = ru.read_sn(CONJ3_ANIMALS_FILE_PATH)
+s_3_occupations, n_3_occupations = ru.read_sn(CONJ3_OCCUPATIONS_FILE_PATH)
 
-conj1 = r222.utils.conj(s_1, n_1)
-conj2 = r222.utils.conj(s_2, n_2)
-conj3_countries = r222.utils.conj(s_3_countries, n_3_countries)
-conj3_sports = r222.utils.conj(s_3_sports, n_3_sports)
-conj3_animals = r222.utils.conj(s_3_animals, n_3_animals)
-conj3_occupations = r222.utils.conj(s_3_occupations, n_3_occupations)
+conj1 = ru.conj(s_1, n_1)
+conj2 = ru.conj(s_2, n_2)
+conj3_countries = ru.conj(s_3_countries, n_3_countries)
+conj3_sports = ru.conj(s_3_sports, n_3_sports)
+conj3_animals = ru.conj(s_3_animals, n_3_animals)
+conj3_occupations = ru.conj(s_3_occupations, n_3_occupations)
 
 with open(AN_FILE_PATH, "r") as an_file:
     for line in iter(an_file):
@@ -97,34 +97,34 @@ with open(AN_FILE_PATH, "r") as an_file:
 
         an_vector_add = np.add(adjective_vector, noun_vector)
         an_vector_mult = np.multiply(adjective_vector, noun_vector)
-        an_vector_conj1 = r222.utils.dotkron(adjective_vector, noun_vector, conj1)
-        an_vector_conj2 = r222.utils.dotkron(adjective_vector, noun_vector, conj2)
+        an_vector_conj1 = ru.dotkron(adjective_vector, noun_vector, conj1)
+        an_vector_conj2 = ru.dotkron(adjective_vector, noun_vector, conj2)
 
-        cuml_add_sim += r222.utils.cos_sim(an_vector, an_vector_add)
-        cuml_mult_sim += r222.utils.cos_sim(an_vector, an_vector_mult)
-        cuml_conj1_sim += r222.utils.cos_sim(an_vector, an_vector_conj1)
-        cuml_conj2_sim += r222.utils.cos_sim(an_vector, an_vector_conj2)
+        cuml_add_sim += ru.cos_sim(an_vector, an_vector_add)
+        cuml_mult_sim += ru.cos_sim(an_vector, an_vector_mult)
+        cuml_conj1_sim += ru.cos_sim(an_vector, an_vector_conj1)
+        cuml_conj2_sim += ru.cos_sim(an_vector, an_vector_conj2)
 
         an_count += 1
 
         if noun in countries:
-            an_vector_conj3_countries = r222.utils.dotkron(adjective_vector, noun_vector, conj3_countries)
-            cuml_conj3_countries_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_countries)
+            an_vector_conj3_countries = ru.dotkron(adjective_vector, noun_vector, conj3_countries)
+            cuml_conj3_countries_sim += ru.cos_sim(an_vector, an_vector_conj3_countries)
             an_countries_count += 1
 
         if noun in sports:
-            an_vector_conj3_sports = r222.utils.dotkron(adjective_vector, noun_vector, conj3_sports)
-            cuml_conj3_sports_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_sports)
+            an_vector_conj3_sports = ru.dotkron(adjective_vector, noun_vector, conj3_sports)
+            cuml_conj3_sports_sim += ru.cos_sim(an_vector, an_vector_conj3_sports)
             an_sports_count += 1
 
         if noun in animals:
-            an_vector_conj3_animals = r222.utils.dotkron(adjective_vector, noun_vector, conj3_animals)
-            cuml_conj3_animals_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_animals)
+            an_vector_conj3_animals = ru.dotkron(adjective_vector, noun_vector, conj3_animals)
+            cuml_conj3_animals_sim += ru.cos_sim(an_vector, an_vector_conj3_animals)
             an_animals_count += 1
 
         if noun in occupations:
-            an_vector_conj3_occupations = r222.utils.dotkron(adjective_vector, noun_vector, conj3_occupations)
-            cuml_conj3_occupations_sim += r222.utils.cos_sim(an_vector, an_vector_conj3_occupations)
+            an_vector_conj3_occupations = ru.dotkron(adjective_vector, noun_vector, conj3_occupations)
+            cuml_conj3_occupations_sim += ru.cos_sim(an_vector, an_vector_conj3_occupations)
             an_occupations_count += 1
 
 logging.info("Total AN pairs: " + str(an_count))
@@ -153,14 +153,14 @@ if an_occupations_count == 0:
 else:
     logging.info("Average cosine similarity (conj3occupations): " + str(cuml_conj3_occupations_sim/an_occupations_count) + " (" + str(an_occupations_count) + ")")
 
-ans = r222.utils.read_set(AN_FILE_PATH)
-ans_split = r222.utils.split_set(ans, NUM_SPLITS)
+ans = ru.read_set(AN_FILE_PATH)
+ans_split = ru.split_set(ans, NUM_SPLITS)
 
 cuml_conj4_sims = list()
 
 for i in range(0, NUM_SPLITS):
-    s_4, n_4 = r222.utils.read_sn(CONJ4_FILE_PATH + "." + str(i+1))
-    conj4 = r222.utils.conj(s_4, n_4)
+    s_4, n_4 = ru.read_sn(CONJ4_FILE_PATH + "." + str(i+1))
+    conj4 = ru.conj(s_4, n_4)
 
     an_count = 0
     cuml_conj4_sim = 0.0
@@ -185,9 +185,9 @@ for i in range(0, NUM_SPLITS):
         if noun_vector is None:
             continue
 
-        an_vector_conj4 = r222.utils.dotkron(adjective_vector, noun_vector, conj4)
+        an_vector_conj4 = ru.dotkron(adjective_vector, noun_vector, conj4)
 
-        cuml_conj4_sim += r222.utils.cos_sim(an_vector, an_vector_conj4)
+        cuml_conj4_sim += ru.cos_sim(an_vector, an_vector_conj4)
 
         an_count += 1
 
