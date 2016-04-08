@@ -3,49 +3,7 @@ import math
 from scipy.optimize import minimize
 import logging
 
-def cos_sim(u, v):
-    return abs(np.dot(u, v)/(np.linalg.norm(u) * np.linalg.norm(v)))
-
-def centroid_vector(vectors):
-    return np.mean(vectors, axis=0)
-
-def big_cos_sim(vector, vectors):
-    norm_vectors = np.linalg.norm(vectors, axis=1)
-    norm_vectors *= np.linalg.norm(vector)
-    prod = np.dot(vector, np.transpose(vectors))
-    prod /= norm_vectors
-    return prod
-
-def sum_cos_sim(vector, vectors):
-    prod = big_cos_sim(vector, vectors)
-    return np.sum(np.abs(prod))
-
-def sum_cos_sim_curry(vectors):
-    def f(vector):
-        return -1.0 * sum_cos_sim(vector, vectors)
-    return f
-
-def con_ortho(ortho):
-    def f(vector):
-        return np.dot(ortho, vector)
-    return f
-
-def con_ortho_jac(ortho):
-    def f(vector):
-        return ortho
-    return f
-
-def furthest_vector(ortho, vectors):
-    x0 = np.ones(300)
-    constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
-    options = { 'disp': True }
-
-    def callback(x):
-        logging.info(str(sum_cos_sim(x, vectors)))
-
-    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
-
-    return res.x
+# I/O
 
 def read_sn(conj_file_path):
     with open(conj_file_path, "r") as conj_file:
@@ -79,6 +37,56 @@ def split_set(ans, num_splits):
     ans_list = list(ans)
     size_split = int(math.ceil(size/float(num_splits)))
     return [ans_list[x:x+size_split] for x in range(0, size, size_split)]
+
+# Linear algebra
+
+def cos_sim(u, v):
+    return abs(np.dot(u, v)/(np.linalg.norm(u) * np.linalg.norm(v)))
+
+def centroid_vector(vectors):
+    return np.mean(vectors, axis=0)
+
+def big_cos_sim(vector, vectors):
+    norm_vectors = np.linalg.norm(vectors, axis=1)
+    norm_vectors *= np.linalg.norm(vector)
+    prod = np.dot(vector, np.transpose(vectors))
+    prod /= norm_vectors
+    return prod
+
+def sum_cos_sim(vector, vectors):
+    prod = big_cos_sim(vector, vectors)
+    return np.sum(np.abs(prod))
+
+def sum_cos_sim_curry(vectors):
+    def f(vector):
+        return -1.0 * sum_cos_sim(vector, vectors)
+    return f
+
+def sum_cos_sim2(sn, avs, nvs, anvs):
+    res = 0.0
+
+    s = sn[0:300]
+    n = sn[300:600]
+
+    c = conj(s, n)
+
+    anvs_c = big_dotkron2(avs, nvs, c)
+
+    prod_inter = np.multiply(anvs_c, anvs)
+    prod = np.sum(prod_inter, axis=1)
+
+    anvs_norms = np.linalg.norm(anvs, axis=1)
+    anvs_c_norms = np.linalg.norm(anvs_c, axis=1)
+
+    norms = np.multiply(anvs_norms, anvs_c_norms)
+    prod /= norms
+
+    return np.sum(np.abs(prod))
+
+def sum_cos_sim2_curry(avs, nvs, anvs):
+    def f(sn):
+        return sum_cos_sim2(sn, avs, nvs, anvs)
+    return f
 
 def dotkron(a, n, c):
     # original dotkron
@@ -127,31 +135,32 @@ def big_dotkron4(avs, nvs, c):
     inter = np.tensordot(nvs, cp, axes=([1],[1]))
     return np.einsum("li,lik->lk", avs, inter)
 
-def sum_cos_sim2(sn, avs, nvs, anvs):
-    res = 0.0
+def conj(s, n):
+    return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
 
-    s = sn[0:300]
-    n = sn[300:600]
+# Optimisation
 
-    c = conj(s, n)
-
-    anvs_c = big_dotkron2(avs, nvs, c)
-
-    prod_inter = np.multiply(anvs_c, anvs)
-    prod = np.sum(prod_inter, axis=1)
-
-    anvs_norms = np.linalg.norm(anvs, axis=1)
-    anvs_c_norms = np.linalg.norm(anvs_c, axis=1)
-
-    norms = np.multiply(anvs_norms, anvs_c_norms)
-    prod /= norms
-
-    return np.sum(np.abs(prod))
-
-def sum_cos_sim2_curry(avs, nvs, anvs):
-    def f(sn):
-        return sum_cos_sim2(sn, avs, nvs, anvs)
+def con_ortho(ortho):
+    def f(vector):
+        return np.dot(ortho, vector)
     return f
+
+def con_ortho_jac(ortho):
+    def f(vector):
+        return ortho
+    return f
+
+def furthest_vector(ortho, vectors):
+    x0 = np.ones(300)
+    constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
+    options = { 'disp': True }
+
+    def callback(x):
+        logging.info(str(sum_cos_sim(x, vectors)))
+
+    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
+
+    return res.x
 
 def con_ortho2(sn):
     return np.dot(sn[0:300], sn[300:600])
@@ -192,10 +201,7 @@ def best_sn(ans, word_vectors):
 
     return sn_split[0], sn_split[1]
 
-def conj(s, n):
-    return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
-
-def nearest(embedding, word_vectors, k):
+def nearest_vectors(embedding, word_vectors, k):
     embeddings = word_vectors._embeddings
     cos_sim = big_cos_sim(embedding, embeddings)
     cos_sim_sorted = np.argsort(cos_sim)
