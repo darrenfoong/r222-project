@@ -67,7 +67,7 @@ def gen_space(f, k):
             noun = line_split[1]
             embedding = f(word_vectors.get(adjective), word_vectors.get(noun))
 
-        nearest = ru.nearest(embedding, word_vectors, k)
+        nearest = ru.nearest_vectors(embedding, word_vectors, k)
 
         logging.info(nearest)
 
