@@ -9,11 +9,15 @@ def cos_sim(u, v):
 def centroid_vector(vectors):
     return np.mean(vectors, axis=0)
 
-def sum_cos_sim(vector, vectors):
+def big_cos_sim(vector, vectors):
     norm_vectors = np.linalg.norm(vectors, axis=1)
     norm_vectors *= np.linalg.norm(vector)
     prod = np.dot(vector, np.transpose(vectors))
     prod /= norm_vectors
+    return prod
+
+def sum_cos_sim(vector, vectors):
+    prod = big_cos_sim(vector, vectors)
     return np.sum(np.abs(prod))
 
 def sum_cos_sim_curry(vectors):
@@ -190,3 +194,10 @@ def best_sn(ans, word_vectors):
 
 def conj(s, n):
     return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
+
+def nearest(embedding, word_vectors, k):
+    embeddings = word_vectors._embeddings
+    cos_sim = big_cos_sim(embedding, embeddings)
+    cos_sim_sorted = np.argsort(cos_sim)
+
+    return map(word_vectors.rget, cos_sim_sorted[:k])
