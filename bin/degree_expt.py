@@ -18,7 +18,7 @@ CONJ3_ANIMALS_FILE_PATH = "data/conj3animals.txt"
 CONJ3_OCCUPATIONS_FILE_PATH = "data/conj3occupations.txt"
 CONJ4_FILE_PATH = "data/conj4.txt"
 
-DEGREE_INPUT_FILE_PATH = "data/degree_input.txt"
+DEGREE_INPUT_FILE_PATH = "aux/degree_input.txt"
 
 NUM_SPLITS = 10
 
@@ -40,7 +40,7 @@ conj3_occupations = ru.conj(s_3_occupations, n_3_occupations)
 
 degree_input = ru.read_set(DEGREE_INPUT_FILE_PATH)
 
-for line in nearest_input:
+for line in degree_input:
     line_split = line.split(";")
     line_split_split = line_split[0].split(" ")
     adjective = line_split_split[0]
