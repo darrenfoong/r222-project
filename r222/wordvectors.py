@@ -3,7 +3,7 @@ import itertools
 import logging
 
 class WordVectors:
-    def __init__(self, path, size_embeddings, unk_string):
+    def __init__(self, path, size_embeddings, unk_string, extra=0):
         self._unk = 0
         self._unk_string = unk_string
 
@@ -12,7 +12,7 @@ class WordVectors:
         self._size_embeddings = size_embeddings
 
         with open(path, "r") as embeddings_file:
-            num_embeddings = sum(1 for line in embeddings_file)
+            num_embeddings = sum(1 for line in embeddings_file) + extra
 
         self._embeddings = np.empty(shape=(num_embeddings, self._size_embeddings))
 
@@ -22,6 +22,13 @@ class WordVectors:
                 line_split = line.split(" ")[:-1]
                 embedding = line_split[1:]
                 self._add(line_split[0], map((lambda s: float(s)), embedding))
+
+    def serialize(self, path):
+        with open(path, "w") as embeddings_file:
+            for key, index in self._map.iteritems():
+                embedding = self._embeddings[index]
+                output = " ".join(map((lambda x: str(x)), embedding))
+                embeddings_file.write(key + " " + output + "\n")
 
     def get(self, key):
         if key in self._map:
