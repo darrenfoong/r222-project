@@ -28,7 +28,7 @@ class WordVectors:
             for key, index in self._map.iteritems():
                 embedding = self._embeddings[index]
                 output = " ".join(map((lambda x: str(x)), embedding))
-                embeddings_file.write(key + " " + output + "\n")
+                embeddings_file.write(key + " " + output + " \n")
 
     def get(self, key):
         if key in self._map:
