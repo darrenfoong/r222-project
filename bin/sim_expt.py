@@ -3,8 +3,9 @@
 import numpy as np
 from r222.wordvectors import WordVectors
 import r222.utils as ru
-import itertools
 import logging
+import os
+import sys
 
 logging.basicConfig(filename="output/sim_expt.log", filemode="w", level=logging.INFO, format="%(message)s")
 
@@ -150,6 +151,9 @@ if an_occupations_count == 0:
     logging.info("an_occupations_count = 0")
 else:
     logging.info("Average cosine similarity (conj3occupations): " + str(cuml_conj3_occupations_sim/an_occupations_count) + " (" + str(an_occupations_count) + ")")
+
+if not os.path.isfile(CONJ4_FILE_PATH + ".1"):
+    sys.exit(0)
 
 ans_split = ru.split_set(ans, NUM_SPLITS)
 

@@ -1,14 +1,13 @@
 #!/usr/bin/python
 
-import numpy as np
 from r222.wordvectors import WordVectors
 import r222.utils as ru
-import itertools
 import logging
 
 logging.basicConfig(filename="output/degree_expt.log", filemode="w", level=logging.INFO, format="%(message)s")
 
 VECTORS_FILE_PATH = "data/vectors-sk-an.lemmas.50-min-count.15-iters"
+DEGREE_INPUT_FILE_PATH = "aux/degree_input.txt"
 
 CONJ1_FILE_PATH = "data/conj1.txt"
 CONJ2_FILE_PATH = "data/conj2.txt"
@@ -16,11 +15,6 @@ CONJ3_COUNTRIES_FILE_PATH = "data/conj3countries.txt"
 CONJ3_SPORTS_FILE_PATH = "data/conj3sports.txt"
 CONJ3_ANIMALS_FILE_PATH = "data/conj3animals.txt"
 CONJ3_OCCUPATIONS_FILE_PATH = "data/conj3occupations.txt"
-CONJ4_FILE_PATH = "data/conj4.txt"
-
-DEGREE_INPUT_FILE_PATH = "aux/degree_input.txt"
-
-NUM_SPLITS = 10
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 
@@ -53,5 +47,15 @@ for line in degree_input:
 
     cos_sim1 = ru.cos_sim(ru.dotkron(av, nv, conj1), tv)
     cos_sim2 = ru.cos_sim(ru.dotkron(av, nv, conj2), tv)
+    cos_sim3_countries = ru.cos_sim(ru.dotkron(av, nv, conj3_countries), tv)
+    cos_sim3_sports = ru.cos_sim(ru.dotkron(av, nv, conj3_sports), tv)
+    cos_sim3_animals = ru.cos_sim(ru.dotkron(av, nv, conj3_animals), tv)
+    cos_sim3_occupations = ru.cos_sim(ru.dotkron(av, nv, conj3_occupations), tv)
 
-    logging.info(line + " = " + str(cos_sim1) + " ; " + str(cos_sim2))
+    logging.info(line)
+    logging.info(" conj1: " + str(cos_sim1))
+    logging.info(" conj2: " + str(cos_sim2))
+    logging.info(" conj3countries: " + str(cos_sim3_countries))
+    logging.info(" conj3sports: " + str(cos_sim3_sports))
+    logging.info(" conj3animals: " + str(cos_sim3_animals))
+    logging.info(" conj3occupations: " + str(cos_sim3_occupations))
