@@ -32,6 +32,8 @@ nouns = ru.read_set(NOUNS_FILE_PATH)
 logging.info("Adjectives: " + str(len(adjectives)))
 logging.info("Nouns: " + str(len(nouns)))
 
+nearest_input = ru.read_set(NEAREST_INPUT_FILE_PATH)
+
 s_1, n_1 = ru.read_sn(CONJ1_FILE_PATH)
 s_2, n_2 = ru.read_sn(CONJ2_FILE_PATH)
 s_3_countries, n_3_countries = ru.read_sn(CONJ3_COUNTRIES_FILE_PATH)
@@ -53,8 +55,6 @@ def gen_space(f, k):
         key = "YYY_" + adjective + "_" noun + "_YYY"
         embedding = f(word_vectors.get(adjective), word_vectors.get(noun))
         word_vectors._add(key, embedding)
-
-    nearest_input = ru.read_set(NEAREST_INPUT_FILE_PATH)
 
     for line in nearest_input:
         line_split = line.split(" ")

@@ -22,13 +22,17 @@ def write_sn(conj_file_path, s, n):
         conj_file.write(s_str + "\n")
         conj_file.write(n_str + "\n")
 
-def read_set(set_file_path):
+def read_set(set_file_path, split=False):
     res = set()
 
     with open(set_file_path, "r") as set_file:
         for line in iter(set_file):
             line = line.replace("\n", "")
-            res.add(line)
+
+            if split:
+                res.add(tuple(line.split(" ")))
+            else:
+                res.add(line)
 
     return res
 
