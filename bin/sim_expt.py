@@ -29,22 +29,19 @@ CONJ4_FILE_PATH = "data/conj4.txt"
 NUM_SPLITS = 10
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
-adjectives = list()
-nouns = list()
 
 logging.info("Word vectors: " + str(len(word_vectors._map)))
 
-with open(ADJECTIVES_FILE_PATH, "r") as adjectives_file, \
-     open(NOUNS_FILE_PATH, "r") as nouns_file:
+adjectives = r222.utils.read_set(ADJECTIVES_FILE_PATH)
+nouns = r222.utils.read_set(NOUNS_FILE_PATH)
 
-    adjectives = adjectives_file.read().split("\n")[:-1]
-    nouns = nouns_file.read().split("\n")[:-1]
-
-    logging.info("Adjectives: " + str(len(adjectives)))
-    logging.info("Nouns: " + str(len(nouns)))
+logging.info("Adjectives: " + str(len(adjectives)))
+logging.info("Nouns: " + str(len(nouns)))
 
 countries = r222.utils.read_set(COUNTRIES_FILE_PATH)
 sports = r222.utils.read_set(SPORTS_FILE_PATH)
+animals = r222.utils.read_set(ANIMALS_FILE_PATH)
+occupations = r222.utils.read_set(OCCUPATIONS_FILE_PATH)
 
 an_count = 0
 an_countries_count = 0
