@@ -24,7 +24,7 @@ class WordVectors:
                 self._add(line_split[0], map((lambda s: float(s)), embedding))
 
     def serialize(self, path):
-        with open(path, "w") as embeddings_file:
+        with open(path, "w", buffering=512*(1024**2)) as embeddings_file:
             for key, index in self._map.iteritems():
                 embedding = self._embeddings[index]
                 output = " ".join(map((lambda x: str(x)), embedding))
