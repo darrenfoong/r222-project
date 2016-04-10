@@ -102,8 +102,8 @@ def dotkron2(a, n, c):
     return np.einsum("i,j,ijk->k", a, n, cp)
 
 def big_kron(avs, nvs):
-    rows = np.shape(avs)[0]
-    columns = np.shape(avs)[1]
+    rows = np.shape(nvs)[0]
+    columns = np.shape(nvs)[1]
     columnsq = columns * columns
 
     res = np.empty(shape=(rows, columnsq))
@@ -113,10 +113,26 @@ def big_kron(avs, nvs):
 
     return res
 
+def big_kron_single(av, nvs):
+    rows = np.shape(nvs)[0]
+    columns = np.shape(nvs)[1]
+    columnsq = columns * columns
+
+    res = np.empty(shape=(rows, columnsq))
+
+    for i in range(0, rows):
+        res[i] = np.kron(av, nvs[i])
+
+    return res
+
 def big_dotkron(avs, nvs, c):
     # original big_dotkron with big_kron, fastest
     # but uses most memory because of intermediate an_kron
     an_kron = big_kron(avs, nvs)
+    return np.dot(an_kron, c)
+
+def big_dotkron_single(av, nvs, c):
+    an_kron = big_kron_single(av, nvs)
     return np.dot(an_kron, c)
 
 def big_dotkron2(avs, nvs, c):
@@ -148,7 +164,7 @@ def conj(s, n):
 
 def f_conj(conj):
     def f(av, nvs):
-        return big_dotkron2_single(av, nvs, conj)
+        return big_dotkron_single(av, nvs, conj)
     return f
 
 # Optimisation
