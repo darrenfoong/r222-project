@@ -125,6 +125,10 @@ def big_dotkron2(avs, nvs, c):
     cp = np.reshape(c, (300, 300, 300))
     return np.einsum("li,lj,ijk->lk", avs, nvs, cp)
 
+def big_dotkron2_single(av, nvs, c):
+    cp = np.reshape(c, (300, 300, 300))
+    return np.einsum("i,lj,ijk->lk", av, nvs, cp)
+
 def big_dotkron3(avs, nvs, c):
     # slower than 1, faster than 2
     # doesn't use less memory
@@ -143,8 +147,8 @@ def conj(s, n):
     return np.outer(np.kron(s, s), s) + np.outer(np.kron(s, n), n) + np.outer(np.kron(n, s), n) + np.outer(np.kron(n, n), n)
 
 def f_conj(conj):
-    def f(av, nv):
-        return dotkron(av, nv, conj)
+    def f(av, nvs):
+        return big_dotkron2_single(av, nvs, conj)
     return f
 
 # Optimisation
