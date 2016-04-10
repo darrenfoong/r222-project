@@ -113,18 +113,6 @@ def big_kron(avs, nvs):
 
     return res
 
-def big_kron_single(av, nvs):
-    rows = np.shape(nvs)[0]
-    columns = np.shape(nvs)[1]
-    columnsq = columns * columns
-
-    res = np.empty(shape=(rows, columnsq))
-
-    for i in range(0, rows):
-        res[i] = np.kron(av, nvs[i])
-
-    return res
-
 def big_dotkron(avs, nvs, c):
     # original big_dotkron with big_kron, fastest
     # but uses most memory because of intermediate an_kron
@@ -132,7 +120,7 @@ def big_dotkron(avs, nvs, c):
     return np.dot(an_kron, c)
 
 def big_dotkron_single(av, nvs, c):
-    an_kron = big_kron_single(av, nvs)
+    an_kron = np.kron(av, nvs)
     return np.dot(an_kron, c)
 
 def big_dotkron2(avs, nvs, c):
