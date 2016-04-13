@@ -12,8 +12,8 @@ CONJ2_FILE_PATH = "data/conj2.txt"
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 
-s_2 = ru.centroid_vector(word_vectors._embeddings)
-n_2 = ru.furthest_vector(s_2, word_vectors._embeddings)
+s_2 = ru.normalize(ru.centroid_vector(word_vectors._embeddings))
+n_2 = ru.normalize(ru.furthest_vector(s_2, word_vectors._embeddings))
 
 ru.write_sn(CONJ2_FILE_PATH, s_2, n_2)
 

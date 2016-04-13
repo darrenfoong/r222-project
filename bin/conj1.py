@@ -12,8 +12,8 @@ CONJ1_FILE_PATH = "data/conj1.txt"
 
 word_vectors = WordVectors(VECTORS_FILE_PATH, 300, "UNKNOWN")
 
-s_1 = np.ones(300)
-n_1 = ru.furthest_vector(s_1, word_vectors._embeddings)
+s_1 = ru.normalize(np.ones(300))
+n_1 = ru.normalize(ru.furthest_vector(s_1, word_vectors._embeddings))
 
 ru.write_sn(CONJ1_FILE_PATH, s_1, n_1)
 

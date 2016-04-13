@@ -13,7 +13,7 @@ def read_sn(conj_file_path):
         s = map((lambda s: float(s)), lines[0])
         n = map((lambda s: float(s)), lines[1])
 
-    return np.array(s), np.array(n)
+    return normalize(np.array(s)), normalize(np.array(n))
 
 def write_sn(conj_file_path, s, n):
     with open(conj_file_path, "w") as conj_file:
@@ -43,6 +43,9 @@ def split_set(ans, num_splits):
     return [ans_list[x:x+size_split] for x in range(0, size, size_split)]
 
 # Linear algebra
+
+def normalize(v):
+	return v/np.linalg.norm(v)
 
 def cos_sim(u, v):
     return abs(np.dot(u, v)/(np.linalg.norm(u) * np.linalg.norm(v)))
@@ -167,9 +170,13 @@ def con_ortho_jac(ortho):
         return ortho
     return f
 
+def con_normal(vector):
+        return normalize(vector) - 1.0
+
 def furthest_vector(ortho, vectors):
     x0 = np.ones(300)
-    constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
+    constraints = ({ 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) },
+                   { 'type': 'eq', 'fun': con_normal })
     options = { 'disp': True }
 
     def callback(x):
@@ -182,9 +189,17 @@ def furthest_vector(ortho, vectors):
 def con_ortho2(sn):
     return np.dot(sn[0:300], sn[300:600])
 
+def con_normal_s2(sn):
+    return normalize(sn[0:300]) - 1.0
+
+def con_normal_n2(sn):
+    return normalize(sn[300:600]) - 1.0
+
 def best_sn(ans, word_vectors):
     sn0 = np.ones(600)
-    constraints = { 'type': 'eq', 'fun': con_ortho2 }
+    constraints = ({ 'type': 'eq', 'fun': con_ortho2 },
+                   { 'type': 'eq', 'fun': con_normal_s2 },
+                   { 'type': 'eq', 'fun': con_normal_n2 })
     options = { 'disp': True }
 
     num_ans = len(ans)

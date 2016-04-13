@@ -25,8 +25,8 @@ sports_embeddings = word_vectors.filter(SPORTS_FILE_PATH)
 animals_embeddings = word_vectors.filter(ANIMALS_FILE_PATH)
 occupations_embeddings = word_vectors.filter(OCCUPATIONS_FILE_PATH)
 
-s_3_countries = ru.centroid_vector(countries_embeddings)
-n_3_countries = ru.furthest_vector(s_3_countries, countries_embeddings)
+s_3_countries = ru.normalize(ru.centroid_vector(countries_embeddings))
+n_3_countries = ru.normalize(ru.furthest_vector(s_3_countries, countries_embeddings))
 
 ru.write_sn(CONJ3_COUNTRIES_FILE_PATH, s_3_countries, n_3_countries)
 
