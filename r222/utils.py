@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from scipy.optimize import minimize
+from scipy.optimize import basinhopping
 import logging
 
 # I/O
@@ -177,12 +178,15 @@ def furthest_vector(ortho, vectors):
     x0 = np.random.rand(1,300)
     constraints = ({ 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) },
                    { 'type': 'eq', 'fun': con_normal })
-    options = { 'disp': True }
+    #options = { 'disp': True }
 
     def callback(x):
         logging.info(str(sum_cos_sim(x, vectors)))
 
-    res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
+    minimizer_kwargs = { "constraints": constraints, "callback": callback }
+
+    res = basinhopping(sum_cos_sim_curry(vectors), x0, niter=20, minimizer_kwargs=minimizer_kwargs, disp=True)
+    #res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
 
     return res.x
 
