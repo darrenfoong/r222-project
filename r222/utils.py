@@ -174,7 +174,7 @@ def con_normal(vector):
         return normalize(vector) - 1.0
 
 def furthest_vector(ortho, vectors):
-    x0 = np.ones(300)
+    x0 = np.random.rand(1,300)
     constraints = ({ 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) },
                    { 'type': 'eq', 'fun': con_normal })
     options = { 'disp': True }
