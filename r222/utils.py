@@ -66,7 +66,7 @@ def sum_cos_sim(vector, vectors):
 
 def sum_cos_sim_curry(vectors):
     def f(vector):
-        return -1.0 * sum_cos_sim(vector, vectors)
+        return sum_cos_sim(vector, vectors)
     return f
 
 def sum_cos_sim2(sn, avs, nvs, anvs):
@@ -92,7 +92,7 @@ def sum_cos_sim2(sn, avs, nvs, anvs):
 
 def sum_cos_sim2_curry(avs, nvs, anvs):
     def f(sn):
-        return sum_cos_sim2(sn, avs, nvs, anvs)
+        return -1.0 * sum_cos_sim2(sn, avs, nvs, anvs)
     return f
 
 def dotkron(a, n, c):
