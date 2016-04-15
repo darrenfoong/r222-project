@@ -183,9 +183,12 @@ def furthest_vector(ortho, vectors):
     def callback(x):
         logging.info(str(sum_cos_sim(x, vectors)))
 
+    def callback2(x, f, accept):
+        logging.info("Basinhopping: " + str(f))
+
     minimizer_kwargs = { "constraints": constraints, "callback": callback }
 
-    res = basinhopping(sum_cos_sim_curry(vectors), x0, niter=20, minimizer_kwargs=minimizer_kwargs, disp=True)
+    res = basinhopping(sum_cos_sim_curry(vectors), x0, niter=20, minimizer_kwargs=minimizer_kwargs, disp=True, callback=callback2)
     #res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
 
     return res.x
