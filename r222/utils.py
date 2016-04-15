@@ -195,10 +195,10 @@ def con_ortho2(sn):
     return np.dot(sn[0:300], sn[300:600])
 
 def con_normal_s2(sn):
-    return normalize(sn[0:300]) - 1.0
+    return np.linalg.norm(sn[0:300]) - 1.0
 
 def con_normal_n2(sn):
-    return normalize(sn[300:600]) - 1.0
+    return np.linalg.norm(sn[300:600]) - 1.0
 
 def best_sn(ans, word_vectors):
     sn0 = np.ones(600)
