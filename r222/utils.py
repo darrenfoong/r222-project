@@ -176,7 +176,7 @@ def con_normal(vector):
 def furthest_vector(ortho, vectors):
     x0 = np.random.rand(1,300)
     constraints = { 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) }
-    options = { 'disp': True, 'maxiter': 200 }
+    options = { 'disp': True, 'maxiter': 100 }
 
     def callback(x):
         logging.info(str(sum_cos_sim(x, vectors)))
