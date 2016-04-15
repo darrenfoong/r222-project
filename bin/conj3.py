@@ -30,15 +30,21 @@ n_3_countries = ru.normalize(ru.furthest_vector(s_3_countries, countries_embeddi
 
 ru.write_sn(CONJ3_COUNTRIES_FILE_PATH, s_3_countries, n_3_countries)
 
+logging.info("Done")
+
 s_3_sports = ru.normalize(ru.centroid_vector(sports_embeddings))
 n_3_sports = ru.normalize(ru.furthest_vector(s_3_sports, sports_embeddings))
 
 ru.write_sn(CONJ3_SPORTS_FILE_PATH, s_3_sports, n_3_sports)
 
+logging.info("Done")
+
 s_3_animals = ru.normalize(ru.centroid_vector(animals_embeddings))
 n_3_animals = ru.normalize(ru.furthest_vector(s_3_animals, animals_embeddings))
 
 ru.write_sn(CONJ3_ANIMALS_FILE_PATH, s_3_animals, n_3_animals)
+
+logging.info("Done")
 
 s_3_occupations = ru.normalize(ru.centroid_vector(occupations_embeddings))
 n_3_occupations = ru.normalize(ru.furthest_vector(s_3_occupations, occupations_embeddings))
