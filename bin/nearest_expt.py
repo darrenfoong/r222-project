@@ -23,7 +23,7 @@ conj2 = ru.conj(s_2, n_2)
 
 nearest_input = ru.read_set(NEAREST_INPUT_FILE_PATH)
 
-def nearest(f, label, k):
+def nearest(f, label, k, s=None, n=None):
     word_vectors = WordVectors(VECTORS_FILE_PATH + "." + label, 300, "UNKNOWN")
 
     for line in nearest_input:
@@ -42,6 +42,18 @@ def nearest(f, label, k):
         logging.info("Nearest neighbours for " + line + ": ")
         logging.info(nearest)
 
+    if s:
+        nearest = ru.nearest_vectors(s, word_vectors, k)
+
+        logging.info("Nearest neighbours for true vector: ")
+        logging.info(nearest)
+
+    if n:
+        nearest = ru.nearest_vectors(n, word_vectors, k)
+
+        logging.info("Nearest neighbours for false vector: ")
+        logging.info(nearest)
+
 logging.info("Running nearest (add)")
 nearest(np.add, "add", K)
 
@@ -49,7 +61,7 @@ logging.info("Running nearest (mult)")
 nearest(np.multiply, "mult", K)
 
 logging.info("Running nearest (conj1)")
-nearest(ru.f_conj(conj1), "conj1", K)
+nearest(ru.f_conj(conj1), "conj1", K, s_1, n_1)
 
 logging.info("Running nearest (conj2)")
-nearest(ru.f_conj(conj2), "conj2", K)
+nearest(ru.f_conj(conj2), "conj2", K, s_2, n_2)
