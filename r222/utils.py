@@ -172,7 +172,7 @@ def con_ortho_jac(ortho):
     return f
 
 def con_normal(vector):
-        return normalize(vector) - 1.0
+    return np.linalg.norm(vector) - 1.0
 
 def furthest_vector(ortho, vectors):
     x0 = np.random.rand(1,300)
