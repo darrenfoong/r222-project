@@ -178,7 +178,6 @@ def furthest_vector(ortho, vectors):
     x0 = np.random.rand(1,300)
     constraints = ({ 'type': 'eq', 'fun': con_ortho(ortho), 'jac': con_ortho_jac(ortho) },
                    { 'type': 'eq', 'fun': con_normal })
-    #options = { 'disp': True }
 
     def callback(x):
         logging.info(str(sum_cos_sim(x, vectors)))
@@ -188,8 +187,7 @@ def furthest_vector(ortho, vectors):
 
     minimizer_kwargs = { "constraints": constraints, "callback": callback }
 
-    res = basinhopping(sum_cos_sim_curry(vectors), x0, niter=20, minimizer_kwargs=minimizer_kwargs, disp=True, callback=callback2)
-    #res = minimize(sum_cos_sim_curry(vectors), x0, constraints=constraints, options=options, callback=callback)
+    res = basinhopping(sum_cos_sim_curry(vectors), x0, niter=1, minimizer_kwargs=minimizer_kwargs, disp=True, callback=callback2)
 
     return res.x
 
