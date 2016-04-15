@@ -46,7 +46,7 @@ def split_set(ans, num_splits):
 # Linear algebra
 
 def normalize(v):
-	return v/np.linalg.norm(v)
+    return v/np.linalg.norm(v)
 
 def cos_sim(u, v):
     return abs(np.dot(u, v)/(np.linalg.norm(u) * np.linalg.norm(v)))
