@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import numpy as np
 from r222.wordvectors import WordVectors
 import r222.utils as ru
 import logging
@@ -51,6 +52,7 @@ for line in degree_input:
     dk3_sports = ru.dotkron(av, nv, conj3_sports)
     dk3_animals = ru.dotkron(av, nv, conj3_animals)
     dk3_occupations = ru.dotkron(av, nv, conj3_occupations)
+    dkadd = np.add(av, nv)
 
     cos_sim1 = ru.cos_sim(dk1, tv)
     cos_sim2 = ru.cos_sim(dk2, tv)
@@ -66,6 +68,8 @@ for line in degree_input:
     cos_sim3_animals_s = ru.cos_sim(dk3_animals, s_3_animals)
     cos_sim3_occupations_s = ru.cos_sim(dk3_occupations, s_3_occupations)
 
+    cos_sim_add = ru.cos_sim(dkadd, tv)
+
     logging.info(line)
     logging.info(" conj1: " + str(cos_sim1) + " (" + str(cos_sim1_s) + ")")
     logging.info(" conj2: " + str(cos_sim2) + " (" + str(cos_sim2_s) + ")")
@@ -73,3 +77,4 @@ for line in degree_input:
     logging.info(" conj3sports: " + str(cos_sim3_sports) + " (" + str(cos_sim3_sports_s) + ")")
     logging.info(" conj3animals: " + str(cos_sim3_animals) + " (" + str(cos_sim3_animals_s) + ")")
     logging.info(" conj3occupations: " + str(cos_sim3_occupations) + " (" + str(cos_sim3_occupations_s) + ")")
+    logging.info(" add: " + str(cos_sim_add))
