@@ -75,6 +75,10 @@ cuml_conj3_countries_sim = 0.0
 cuml_conj3_sports_sim = 0.0
 cuml_conj3_animals_sim = 0.0
 cuml_conj3_occupations_sim = 0.0
+cuml_conj3_countries_add_sim = 0.0
+cuml_conj3_sports_add_sim = 0.0
+cuml_conj3_animals_add_sim = 0.0
+cuml_conj3_occupations_add_sim = 0.0
 
 for adjective, noun in ans:
     adjective_noun = adjective + "_" + noun
@@ -109,21 +113,25 @@ for adjective, noun in ans:
     if noun in countries:
         an_vector_conj3_countries = ru.dotkron(adjective_vector, noun_vector, conj3_countries)
         cuml_conj3_countries_sim += ru.cos_sim(an_vector, an_vector_conj3_countries)
+        cuml_conj3_countries_add_sim += ru.cos_sim(an_vector, an_vector_add)
         an_countries_count += 1
 
     if noun in sports:
         an_vector_conj3_sports = ru.dotkron(adjective_vector, noun_vector, conj3_sports)
         cuml_conj3_sports_sim += ru.cos_sim(an_vector, an_vector_conj3_sports)
+        cuml_conj3_sports_add_sim += ru.cos_sim(an_vector, an_vector_add)
         an_sports_count += 1
 
     if noun in animals:
         an_vector_conj3_animals = ru.dotkron(adjective_vector, noun_vector, conj3_animals)
         cuml_conj3_animals_sim += ru.cos_sim(an_vector, an_vector_conj3_animals)
+        cuml_conj3_animals_add_sim += ru.cos_sim(an_vector, an_vector_add)
         an_animals_count += 1
 
     if noun in occupations:
         an_vector_conj3_occupations = ru.dotkron(adjective_vector, noun_vector, conj3_occupations)
         cuml_conj3_occupations_sim += ru.cos_sim(an_vector, an_vector_conj3_occupations)
+        cuml_conj3_occupations_add_sim += ru.cos_sim(an_vector, an_vector_add)
         an_occupations_count += 1
 
 logging.info("Total AN pairs: " + str(an_count))
@@ -135,22 +143,22 @@ logging.info("Average cosine similarity (conj2): " + str(cuml_conj2_sim/an_count
 if an_countries_count == 0:
     logging.info("an_countries_count = 0")
 else:
-    logging.info("Average cosine similarity (conj3countries): " + str(cuml_conj3_countries_sim/an_countries_count) + " (" + str(an_countries_count) + ")")
+    logging.info("Average cosine similarity (conj3countries): " + str(cuml_conj3_countries_sim/an_countries_count) + " " + str(cuml_conj3_countries_add_sim/an_countries_count) + " (" + str(an_countries_count) + ")")
 
 if an_sports_count == 0:
     logging.info("an_sports_count = 0")
 else:
-    logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " (" + str(an_sports_count) + ")")
+    logging.info("Average cosine similarity (conj3sports): " + str(cuml_conj3_sports_sim/an_sports_count) + " " + str(cuml_conj3_sports_add_sim/an_sports_count) + " (" + str(an_sports_count) + ")")
 
 if an_animals_count == 0:
     logging.info("an_animals_count = 0")
 else:
-    logging.info("Average cosine similarity (conj3animals): " + str(cuml_conj3_animals_sim/an_animals_count) + " (" + str(an_animals_count) + ")")
+    logging.info("Average cosine similarity (conj3animals): " + str(cuml_conj3_animals_sim/an_animals_count) + " " + str(cuml_conj3_animals_add_sim/an_animals_count) + " (" + str(an_animals_count) + ")")
 
 if an_occupations_count == 0:
     logging.info("an_occupations_count = 0")
 else:
-    logging.info("Average cosine similarity (conj3occupations): " + str(cuml_conj3_occupations_sim/an_occupations_count) + " (" + str(an_occupations_count) + ")")
+    logging.info("Average cosine similarity (conj3occupations): " + str(cuml_conj3_occupations_sim/an_occupations_count) + " " + str(cuml_conj3_occupations_add_sim/an_occupations_count) + " (" + str(an_occupations_count) + ")")
 
 if not os.path.isfile(CONJ4_FILE_PATH + ".1"):
     sys.exit(0)
