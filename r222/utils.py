@@ -237,4 +237,7 @@ def nearest_vectors(embedding, word_vectors, k):
     cos_sim = big_cos_sim(embedding, embeddings)
     cos_sim_sorted = np.argsort(cos_sim)
 
-    return map(word_vectors.rget, cos_sim_sorted[:k])
+    res_sims = map((lambda x: cos_sim[x]), cos_sim_sorted[:k])
+    res_words = map(word_vectors.rget, cos_sim_sorted[:k])
+
+    return zip(res_sims, res_words)
