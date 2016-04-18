@@ -44,13 +44,13 @@ def nearest(f, label, k, s=None, n=None):
         logging.info("Nearest neighbours for " + line + ": ")
         logging.info(nearest)
 
-    if s:
+    if s is not None:
         nearest = ru.nearest_vectors(s, word_vectors, k)
 
         logging.info("Nearest neighbours for true vector: ")
         logging.info(nearest)
 
-    if n:
+    if n is not None:
         nearest = ru.nearest_vectors(n, word_vectors, k)
 
         logging.info("Nearest neighbours for false vector: ")
