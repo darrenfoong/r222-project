@@ -26,6 +26,8 @@ nearest_input = ru.read_set(NEAREST_INPUT_FILE_PATH)
 def nearest(f, label, k, s=None, n=None):
     word_vectors = WordVectors(VECTORS_FILE_PATH + "." + label, 300, "UNKNOWN")
 
+    logging.info("Word vectors loaded")
+
     for line in nearest_input:
         line_split = line.split(" ")
 
