@@ -58,11 +58,11 @@ def big_cos_sim(vector, vectors):
     norm_vectors *= np.linalg.norm(vector)
     prod = np.dot(vector, np.transpose(vectors))
     prod /= norm_vectors
-    return prod
+    return np.abs(prod)
 
 def sum_cos_sim(vector, vectors):
     prod = big_cos_sim(vector, vectors)
-    return np.sum(np.abs(prod))
+    return np.sum(prod)
 
 def sum_cos_sim_curry(vectors):
     def f(vector):
@@ -235,9 +235,9 @@ def best_sn(ans, word_vectors):
 def nearest_vectors(embedding, word_vectors, k):
     embeddings = word_vectors._embeddings
     cos_sim = big_cos_sim(embedding, embeddings)
-    cos_sim_sorted = np.argsort(cos_sim)
+    cos_sim_sorted = np.argsort(cos_sim)[::-1]
 
-    res_sims = map((lambda x: cos_sim[x]), cos_sim_sorted[:k])
     res_words = map(word_vectors.rget, cos_sim_sorted[:k])
+    res_sims = map((lambda x: cos_sim[x]), cos_sim_sorted[:k])
 
-    return zip(res_sims, res_words)
+    return zip(res_words, res_sims)
