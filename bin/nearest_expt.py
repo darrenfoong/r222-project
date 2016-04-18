@@ -5,7 +5,7 @@ from r222.wordvectors import WordVectors
 import r222.utils as ru
 import logging
 
-logging.basicConfig(filename="output/nearest_expt.log", filemode="w", level=logging.INFO, format="%(message)s")
+logging.basicConfig(filename="output/nearest_expt.log", filemode="w", level=logging.INFO, format="%(asctime)s - %(message)s")
 
 VECTORS_FILE_PATH = "data/vectors-sk-an.lemmas.50-min-count.15-iters"
 NEAREST_INPUT_FILE_PATH = "aux/nearest_input.txt"
